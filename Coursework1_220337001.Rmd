@@ -1,0 +1,210 @@
+---
+title: "MTH6139 Time Series" 
+subtitle: "How Air Travel has evolved over the years" 
+author: "Zaidan Patel" 
+date: "Spring term 2025" 
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    theme: spacelab 
+    highlight: tango
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r, echo=FALSE}
+# This code will display the QMUL logo at the top right of the page
+# Do not change this code
+htmltools::img(src = knitr::image_uri("images/QMlogo.png"),
+               alt = 'logo',
+               style = 'position:absolute; top:0; right:0; padding:10px; width:20%;')
+```
+
+# Section 1: Introduction
+
+## 1.1 What is 'AirPassengers'
+
+```         
+```
+
+```{r}
+AirPassengers
+```
+
+As shown above 'AirPassengers' is a time series data set showing the
+amount of airline passengers a month from 1949 to 1960.
+
+## 1.2 The purpose of this project
+
+This project will look into Meta Prophet predictions using the
+'AirPassengers' time series dataset and seeing how true they are, and if
+they are not giving reasons as to why it isn't.
+
+## 1.3 Data preparation steps
+
+1)  
+
+```{r}
+#install.packages("prophet")
+```
+
+Installs the prophet package from CRAN.
+
+2)  
+
+```{r}
+library(prophet)
+```
+
+Loads the prophet package into the r session.
+
+3)  
+
+```{r}
+#install.packages("remotes")
+```
+
+Installs the remotes package, which is used to load other packages not
+in the CRAN.
+
+4)  
+
+```{r}
+remotes::install_github('facebook/prophet@*release', subdir='R')
+```
+
+Installs the latest release of prophet from GitHub.
+
+5)  
+
+```{r}
+data("AirPassengers")
+```
+
+Loads the AirPassengers data explained in section 1.1.
+
+6)  
+
+```{r}
+start_date <- as.Date("1949-01-01")
+```
+
+Representing the start date of the time series.
+
+7)  
+
+```{r}
+dates <- seq(start_date, by = "month", length.out = length(AirPassengers))
+```
+
+Generates a sequence of dates, atattching each data in the AirPassengers
+data set to a month starting from 01/01/1949
+
+8)  
+
+```{r}
+air.df <- data.frame(
+    ds = dates,
+    y = as.numeric(AirPassengers)
+)
+```
+
+Makes a dataframe that will work with prophet, where 'ds' is the data
+sequence and 'y' is the number of passengers.
+
+9)  
+
+```{r}
+m <- prophet(air.df)
+```
+
+Fits the prophet model to air.df.
+
+10) 
+
+```{r}
+future <- make_future_dataframe(m, periods = 100, freq = "month")
+```
+
+Creates a future dataframe for making predictions.
+
+11) 
+
+```{r}
+forecast <- predict(m, future)
+```
+
+Uses the fitted model m to make predictions for the future.
+
+12) 
+
+```{r}
+plot(m, forecast)
+```
+
+Plots the forecast.
+
+## 1.4 Findings
+
+![](images/Forecast%20Plot.png)
+
+As shown in the image above, in 1950 the monthly number of aier
+passengers was at roughly 1.25 million, an annual number of 15 million .
+This rose to roughly 5 million a month in 1960, an annual number of 60
+million.
+
+The future is then forcasted, with an annual number of 100 million air
+passengers by 1970. This however can be shown to be false.
+
+![](images/Real%20Forecast.png)
+
+As shown in the image above the actual number of global airline
+passengers in 1970 was 382.95 million. This can be explained however.
+The meta prophet forecast was based on the historical data, which did
+not account for massive increases in airline technology and
+globalisation advancements.
+
+Some of these advancements include:
+
+![](images/747.png)
+
+The Boeing 747 was a huge leap in commercial air travel, it was a much
+larger aircraft whilst also being more cost effective. This allowed
+people to travel at a cheaper and more attractive price point.
+
+![](images/Concorde.png)
+
+The Concorde was also a another giant leap. it allowed travel to be much
+quicker in turn making air travel even more attractive through how
+efficient it was.
+
+![](images/Other%20Advancements.png)
+
+Deregulation also played a key role into the increase in air travel in
+the 1970s. The Airline Deregulation Act allowed airlines to set their
+own prices and routes, which caused increased competition and lower
+prices.
+
+Lastly there was also a big cultural shift when it came to air travel.
+More people became excited by the idea of experiencing different
+cultures and meeting different people.
+
+## **References**
+
+-   Global Airline Passengers :
+
+    <https://ourworldindata.org/grapher/number-airline-passengers?time=1947>
+
+-   Airline advancements in 1970s
+
+    <https://www.loveexploring.com/gallerylist/86315/how-air-travel-has-changed-in-every-decade-from-the-1920s-to-today>
+
+-   Airline Deregulation Act
+
+    <https://www.vdh.virginia.gov/content/uploads/sites/23/2017/04/AirlineDeregulationAct.7.pdf>
+
+-   Airline Cultural Shift
+
+    <https://airandspace.si.edu/explore/stories/evolution-commercial-flying-experience#>:
